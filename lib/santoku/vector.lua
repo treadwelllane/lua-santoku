@@ -41,7 +41,7 @@ M.MT_VECTOR = {
 
 
 M.isvec = function (t)
-  return compat.hasmeta(t, M.MT_VECTOR)
+  return compat.hasmeta(t, M.MT_VECTOR), "argument is not a vector"
 end
 
 
