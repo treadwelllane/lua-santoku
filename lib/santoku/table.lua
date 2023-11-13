@@ -178,6 +178,7 @@ end
 
 M.paths = function (t, fn, stop)
   stop = stop or function (v)
+
     return not compat.hasmeta.index(v)
   end
   assert(compat.hasmeta.call(stop))
