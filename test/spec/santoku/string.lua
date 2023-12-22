@@ -22,7 +22,6 @@ test("string", function ()
 
   end)
 
-
   test("interp", function ()
 
     test("should interpolate values", function ()
