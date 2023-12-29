@@ -566,6 +566,8 @@ M.zip = function (opts, ...)
   end, gens())
 end
 
+
+
 M.slice = function (gen, start, num)
   assert(M.iscogen(gen))
   gen:take((start or 1) - 1):discard()
