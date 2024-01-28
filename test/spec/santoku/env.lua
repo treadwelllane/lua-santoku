@@ -1,10 +1,7 @@
 local test = require("santoku.test")
-local assert = require("luassert")
 local env = require("santoku.env")
 
-test("utils", function ()
-
-  test("interpreter", function ()
+test("interpreter", function ()
 
 
 
@@ -30,21 +27,19 @@ test("utils", function ()
 
 
 
-  end)
+end)
 
-  test("env", function ()
+test("env", function ()
 
-    local ok, _ = pcall(env.var, "ASDF123")
-    assert.equals(false, ok)
+  local ok, _ = pcall(env.var, "ASDF123")
+  assert(false == ok)
 
-    local ok, val = pcall(env.var, "ASDF123", "hello")
-    assert.equals(true, ok)
-    assert.equals("hello", val)
+  local ok, val = pcall(env.var, "ASDF123", "hello")
+  assert(true == ok)
+  assert("hello" == val)
 
-    local ok, val = pcall(env.var, "ASDF123", nil)
-    assert.equals(true, ok)
-    assert.is_nil(val)
-
-  end)
+  local ok, val = pcall(env.var, "ASDF123", nil)
+  assert(true == ok)
+  assert(nil == val)
 
 end)
