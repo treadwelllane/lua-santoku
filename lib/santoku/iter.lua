@@ -140,18 +140,18 @@ end
 
 local function _deinterleave (it)
   local removing = false
-  local function __deinterleave (a, i)
+  local function helper (a, i)
     if i ~= nil then
       if not removing then
         removing = true
         return it(a, i)
       else
         removing = false
-        return __deinterleave(a, it(a, i))
+        return helper(a, it(a, i))
       end
     end
   end
-  return __deinterleave
+  return helper
 end
 
 local function interleave (v, it, a, i)
@@ -293,17 +293,6 @@ return {
   tail = tail,
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
