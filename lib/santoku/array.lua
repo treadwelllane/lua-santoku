@@ -292,22 +292,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function tabulate (t, ...)
   assert(hasindex(t))
   local start = 1
