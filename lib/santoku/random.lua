@@ -1,5 +1,3 @@
-
-
 local _seed = math.randomseed
 local _time = os.time
 local _char = string.char
