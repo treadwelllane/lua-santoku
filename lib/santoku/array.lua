@@ -31,15 +31,19 @@ local function clear (t, ts, te)
   return t
 end
 
+
+
 local _move = table.move or -- luacheck: ignore
   function (s, ss, se, ds, d)
     d = d or s
-    local inc = 1
-    if ss <= ds then
-      ss, se, inc = se, ss, -1
-    end
-    for i = se, ss, inc do
-      d[ds + i - ss] = s[i]
+    if se >= ss then
+      local m, n, o = 0, se - ss, 1
+      if ds > ss then
+        m, n, o = n, m, -1
+      end
+      for i = m, n, o do
+        d[ds + i] = s[ss + i]
+      end
     end
     return d
   end
@@ -251,46 +255,6 @@ local function reduce (t, acc, ...)
   end
   return val
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 local function tabulate (t, ...)
   assert(hasindex(t))
