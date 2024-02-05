@@ -40,8 +40,6 @@ local smatch = string.match
 local mhuge = math.huge
 local io_write = io.write
 
-
-
 local function _separate (str, pat, s, e)
   local a = s
   local b, c
@@ -181,15 +179,6 @@ local function match (str, pat, delim, s, e)
   return _match("inner", delim, e, _separate(str, pat, s, e))
 end
 
-
-
-
-
-
-
-
-
-
 local function interp (s, t)
 
   local fmtpat = "%%[%w.]+"
@@ -295,11 +284,9 @@ local function unquote (s, q, e)
   end
 end
 
-
 local function escape (s)
   return (gsub(s, "[%(%)%.%%+%-%*%?%[%]%^%$]", "%%%1"))
 end
-
 
 local function unescape (s)
   return (gsub(s, "%%([%(%)%.%%+%-%*%?%[%]%^%$])", "%1"))
@@ -312,14 +299,6 @@ end
 local function printi (s, t)
   return print(interp(s, t))
 end
-
-
-
-
-
-
-
-
 
 local function trim (s, left, right)
   if not left then
