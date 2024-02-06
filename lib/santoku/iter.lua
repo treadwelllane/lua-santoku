@@ -91,6 +91,17 @@ local function map (fn, it)
   end
 end
 
+local function paste (val, it)
+  assert(hascall(it))
+  return function ()
+    return tup(function (...)
+      if ... ~= nil then
+        return val, ...
+      end
+    end, it())
+  end
+end
+
 local function chain (a, b)
   assert(hascall(a))
   assert(hascall(b))
@@ -356,6 +367,7 @@ return {
   filter = filter,
   flatten = flatten,
   chain = chain,
+  paste = paste,
 
   interleave = interleave,
   deinterleave = deinterleave,
@@ -375,12 +387,6 @@ return {
 
 
 }
-
-
-
-
-
-
 
 
 
