@@ -7,6 +7,9 @@ local hasindex = validate.hasindex
 local fun = require("santoku.functional")
 local noop = fun.noop
 
+local op = require("santoku.op")
+local add = op.add
+
 local arr = require("santoku.array")
 local clear = arr.clear
 local overlay = arr.overlay
@@ -296,6 +299,11 @@ local function tabulate (it)
   end, {}, it)
 end
 
+local function sum (it)
+  assert(hascall(it))
+  return reduce(add, 0, it)
+end
+
 local function drop (n, it)
   assert(isnumber(n))
   assert(ge(n, 0))
@@ -407,6 +415,7 @@ return {
   chain = chain,
   paste = paste,
   tabulate = tabulate,
+  sum = sum,
 
   interleave = interleave,
   deinterleave = deinterleave,
@@ -427,71 +436,6 @@ return {
   take = take,
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
