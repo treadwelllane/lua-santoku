@@ -291,12 +291,24 @@ local function take (n, it)
   end
 end
 
+
+
 local function tabulate (it)
 
   return reduce(function (a, k, v)
     a[k] = v
     return a
   end, {}, it)
+end
+
+local function set (it, t)
+  t = t or {}
+
+
+  return reduce(function (a, n)
+    a[n] = true
+    return a
+  end, t, it)
 end
 
 local function sum (it)
@@ -320,16 +332,6 @@ local function min (it)
       return a
     end
   end, nil, it)
-end
-
-local function set (it, t)
-  t = t or {}
-
-
-  return reduce(function (a, n)
-    a[n] = true
-    return a
-  end, t, it)
 end
 
 local function max (it)
