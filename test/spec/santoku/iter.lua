@@ -266,10 +266,9 @@ test("range", function ()
   assert(teq({ 2, 4, 6 }, collect(range(2, 6, 2))))
 end)
 
-
-
-
-
+test("spread", function ()
+  assert(teq({ 1, 2, 3, 4, 5 }, { iter.spread(map(tonumber, string.gmatch("1 2 3 4 5", "%d"))) }))
+end)
 
 
 
