@@ -1,9 +1,3 @@
-
-
-
-
-
-
 local fun = require("santoku.functional")
 local noop = fun.noop
 
@@ -49,17 +43,12 @@ local function _reduce (acc, v, it, i, ...)
 end
 
 local function reduce (acc, v, it)
-
-
   return _reduce(acc, v, it, it())
 end
 
 local function collect (it, t, i)
   t = t or {}
-
-
   i = i or #t + 1
-
   return clear(reduce(function (a, n)
     a[i] = n
     i = i + 1
@@ -68,13 +57,10 @@ local function collect (it, t, i)
 end
 
 local function first (it)
-
   return it()
 end
 
 local function each (fn, it)
-
-
   local function helper ()
     return tup(function (...)
       if ... ~= nil then
@@ -87,8 +73,6 @@ local function each (fn, it)
 end
 
 local function map (fn, it)
-
-
   return function ()
     return tup(function (...)
       if ... ~= nil then
@@ -99,7 +83,6 @@ local function map (fn, it)
 end
 
 local function paste (val, it)
-
   return function ()
     return tup(function (...)
       if ... ~= nil then
@@ -110,8 +93,6 @@ local function paste (val, it)
 end
 
 local function zip (a, b)
-
-
   return function ()
     return tup(function (...)
       if ... ~= nil then
@@ -122,8 +103,6 @@ local function zip (a, b)
 end
 
 local function chain (a, b)
-
-
   local it = a
   local function helper ()
     return tup(function (...)
@@ -140,8 +119,6 @@ end
 
 
 local function filter (fn, it)
-
-
   local function helper ()
     return tup(function (...)
       if ... ~= nil then
@@ -158,7 +135,6 @@ end
 
 
 local function flatten (parent)
-
   local child
   local function helper ()
     if child == nil then
@@ -166,7 +142,6 @@ local function flatten (parent)
       if child == nil then
         return
       end
-
     end
     return tup(function (...)
       if ... == nil then
@@ -181,7 +156,6 @@ local function flatten (parent)
 end
 
 local function last (it)
-
   local t = {}
   each(function (...)
     overlay(t, 1, ...)
@@ -190,7 +164,6 @@ local function last (it)
 end
 
 local function butlast (it)
-
   local t
   local function helper ()
     if t == nil then
@@ -211,7 +184,6 @@ end
 
 
 local function interleave (v, it)
-
   local interleaving = false
   return butlast(function ()
     if interleaving then
@@ -229,7 +201,6 @@ local function interleave (v, it)
 end
 
 local function deinterleave (it)
-
   local removing = false
   local function helper ()
     return tup(function (...)
@@ -258,7 +229,6 @@ local function singleton (v)
 end
 
 local function once (fn)
-
   local done = false
   return function ()
     if not done then
@@ -269,7 +239,6 @@ local function once (fn)
 end
 
 local function tail (it)
-
   if it() ~= nil  then
     return it
   else
@@ -278,9 +247,6 @@ local function tail (it)
 end
 
 local function take (n, it)
-
-
-
   return function ()
     if n ~= 0 then
       n = n - 1
@@ -292,7 +258,6 @@ end
 
 
 local function tabulate (it)
-
   return reduce(function (a, k, v)
     a[k] = v
     return a
@@ -301,8 +266,6 @@ end
 
 local function set (it, t)
   t = t or {}
-
-
   return reduce(function (a, n)
     a[n] = true
     return a
@@ -310,19 +273,16 @@ local function set (it, t)
 end
 
 local function sum (it)
-
   return reduce(add, 0, it)
 end
 
 local function count (it)
-
   return reduce(function (a)
     return a + 1
   end, 0, it)
 end
 
 local function min (it)
-
   return reduce(function (a, b)
     if not a or b < a then
       return b
@@ -333,7 +293,6 @@ local function min (it)
 end
 
 local function max (it)
-
   return reduce(function (a, b)
     if not a or b > a then
       return b
@@ -344,7 +303,6 @@ local function max (it)
 end
 
 local function mean (it)
-
   local c = 0
   return reduce(function (a, b)
     c = c + 1
@@ -353,9 +311,6 @@ local function mean (it)
 end
 
 local function drop (n, it)
-
-
-
   local function helper1 ()
     return tup(function (...)
       if ... ~= nil then
@@ -393,7 +348,6 @@ local function keys (t)
 end
 
 local function vals (t)
-
   return map(_val, pairs(t))
 end
 
@@ -424,12 +378,10 @@ local function _async (each, final, it, ...)
   end
 end
 
+
 local function async (it)
-
   return function (each, final)
-
     final = final or noop
-
     return _async(each, final, it, it())
   end
 end
@@ -469,12 +421,10 @@ local function ipairs (t)
 end
 
 local function ikeys (t)
-
   return map(_key, ipairs(t))
 end
 
 local function ivals (t)
-
   return map(_val, ipairs(t))
 end
 

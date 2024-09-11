@@ -1,13 +1,9 @@
-
-
-
 local varg = require("santoku.varg")
 local vsel = varg.sel
 local vlen = varg.len
 local vtake = varg.take
 
 local function bind (fn, ...)
-
   if vlen(...) == 0 then
     return fn
   else
@@ -19,7 +15,6 @@ local function bind (fn, ...)
 end
 
 local function maybe (fn)
-
   return function (ok, ...)
     if ok then
       return true, fn(...)
@@ -30,22 +25,18 @@ local function maybe (fn)
 end
 
 local function compose (a, b)
-
-
   return function (...)
     return a(b(...))
   end
 end
 
 local function sel (fn, n)
-
   return function (...)
     return fn(vsel(n, ...))
   end
 end
 
 local function take (fn, n)
-
   return function (...)
     return fn(vtake(n, ...))
   end

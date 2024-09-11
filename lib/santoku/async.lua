@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 local varg = require("santoku.varg")
 local tup = varg.tup
 
@@ -48,8 +39,6 @@ M._each = function (g, it, done)
 end
 
 M.each = function (g, it, done)
-
-
   return M._each(g, it, done)
 end
 

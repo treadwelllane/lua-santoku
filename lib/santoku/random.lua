@@ -22,15 +22,12 @@ local function seed (t)
 end
 
 local function str (n, ...)
-
   local l, u
   if _select("#", ...) > 0 then
     l, u = ...
   else
     l, u = 32, 127
   end
-
-
   local t = {}
   n = n or 1
   while n > 0 do

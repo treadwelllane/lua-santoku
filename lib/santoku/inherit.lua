@@ -8,7 +8,6 @@
 
 
 
-
 local function getindex (t)
   local tmeta = getmetatable(t)
   if not tmeta then
@@ -18,7 +17,6 @@ local function getindex (t)
 end
 
 local function setindex (t, i)
-
   local mt = getmetatable(t)
   if not mt then
     mt = {}
@@ -29,12 +27,9 @@ local function setindex (t, i)
 end
 
 local function pushindex (t, i)
-
-
   if not i then
     return t
   end
-
   local tindex = getindex(t)
   setindex(t, i)
   if tindex and i ~= tindex then
@@ -44,7 +39,6 @@ local function pushindex (t, i)
 end
 
 local function popindex (t)
-
   local tindex = getindex(t)
   if not tindex then
     return

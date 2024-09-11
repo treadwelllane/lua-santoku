@@ -1,7 +1,3 @@
-
-
-
-
 local arr = require("santoku.array")
 local apush = arr.push
 local apop = arr.pop
@@ -19,8 +15,6 @@ local exit = os.exit
 local tags = {}
 
 return function (tag, fn)
-
-
   apush(tags, tag)
   xpcall(fn, function (...)
     print()
