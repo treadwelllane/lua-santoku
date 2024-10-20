@@ -8,6 +8,9 @@ local tbl = require("santoku.table")
 local teq = tbl.equals
 local tmap = tbl.map
 
+local vdt = require("santoku.validate")
+local eq = vdt.isequal
+
 local str = require("santoku.string")
 local ssplit = str.splits
 local smatch = str.matches
@@ -140,4 +143,51 @@ test("equals", function ()
   assert(teq({ false }, { str.equals("one", "one two three", -10, 3) }));
   assert(teq({ false }, { str.equals("one", "one two three", 0, 3) }));
   assert(teq({ false }, { str.equals("one", "one two three", 3, 1) }));
+end)
+
+test("to/from_hex", function ()
+  local s = "this is an easy test"
+  assert(eq(s, str.from_hex(str.to_hex(s))))
+  assert(eq("", str.from_hex(str.to_hex(""))))
+  assert(eq(" ", str.from_hex(str.to_hex(" "))))
+  assert(eq("!", str.from_hex(str.to_hex("!"))))
+  assert(eq("1234567890", str.from_hex(str.to_hex("1234567890"))))
+  assert(eq("\xFF\xFE\xFD", str.from_hex(str.to_hex("\xFF\xFE\xFD"))))
+  assert(eq("\x00\x01\x02\x03", str.from_hex(str.to_hex("\x00\x01\x02\x03"))))
+end)
+
+test("to/from_base64", function ()
+  local s = "this is an easy test"
+  assert(eq(s, str.from_base64(str.to_base64(s))))
+  assert(eq("", str.from_base64(str.to_base64(""))))
+  assert(eq("A", str.from_base64(str.to_base64("A"))))
+  assert(eq("AB", str.from_base64(str.to_base64("AB"))))
+  assert(eq("ABC", str.from_base64(str.to_base64("ABC"))))
+  assert(eq("ABCD", str.from_base64(str.to_base64("ABCD"))))
+  assert(eq("\xFF\xFE\xFD", str.from_base64(str.to_base64("\xFF\xFE\xFD"))))
+  assert(eq("Man", str.from_base64("TWFu")))
+  assert(eq("Man", str.from_base64("TWFu==")))
+end)
+
+test("to/from_base64_url", function ()
+  local s = "this is an easy test"
+  assert(eq(s, str.from_base64_url(str.to_base64_url(s))))
+  assert(eq("", str.from_base64_url(str.to_base64_url(""))))
+  assert(eq("A", str.from_base64_url(str.to_base64_url("A"))))
+  assert(eq("AB", str.from_base64_url(str.to_base64_url("AB"))))
+  assert(eq("ABC", str.from_base64_url(str.to_base64_url("ABC"))))
+  assert(eq("ABCD", str.from_base64_url(str.to_base64_url("ABCD"))))
+  assert(eq("\xFF\xFE\xFD", str.from_base64_url(str.to_base64_url("\xFF\xFE\xFD"))))
+  assert(eq("Man", str.from_base64_url("TWFu")))
+  assert(eq("Man", str.from_base64_url("TWFu--")))
+end)
+
+test("to/from_url", function ()
+  local s = "this is an easy test"
+  assert(eq(s, str.from_url(str.to_url(s))))
+  assert(eq("", str.from_url(str.to_url(""))))
+  assert(eq(" ", str.from_url(str.to_url(" "))))
+  assert(eq("!@#$%^&*()", str.from_url(str.to_url("!@#$%^&*()"))))
+  assert(eq("A simple test with   spaces",
+    str.from_url(str.to_url("A simple test with   spaces"))))
 end)
