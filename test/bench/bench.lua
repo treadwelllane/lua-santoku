@@ -1,42 +1,35 @@
-local vec = require("santoku.vector")
-local plist = require("pl.List")
 
-collectgarbage("stop")
 
-local run = function(label, fn)
+local bench = require("santoku.bench")
+local rand = require("santoku.random")
 
-  collectgarbage("collect")
-  local sm = collectgarbage("count")
-  local st = os.clock()
-
-  fn()
-
-  local et = os.clock()
-  local em = collectgarbage("count")
-
-  print(label .. " time", et - st)
-  print(label .. " mem", em - sm)
-
+local data = {}
+for i = 1, 100000 do
+  data[i] = rand.num()
 end
 
-run("plist", function ()
-  local l = plist.new()
-  for i = 1, 1000000 do
-
-    l:push(i)
+bench("numeric for", function ()
+  local total = 0
+  for i = 1, #data do
+    total = total + data[i]
   end
+  return total
 end)
 
-run("vector", function ()
-  local l = vec()
-  for i = 1, 1000000 do
-    l:append(i)
+bench("it.ivals", function ()
+  local total = 0
+  for v in it.ivals(data) do
+    total = total + v
   end
+  return total
 end)
 
-run("table", function ()
-  local t = {}
-  for i = 1, 1000000 do
-    t[i] = i
-  end
+bench("asy.ivals", function ()
+  return asy.ivals(function (k, v, t)
+    if v == nil then
+      return k(nil, t)
+    else
+      return k(v, t + v)
+    end
+  end, data, 0)
 end)
