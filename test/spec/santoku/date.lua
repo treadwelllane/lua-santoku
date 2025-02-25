@@ -1,6 +1,6 @@
 local serialize = require("santoku.serialize") -- luacheck: ignore
+local date = require("santoku.date") -- luacheck: ignore
 local test = require("santoku.test")
-
 
 
 
@@ -20,3 +20,6 @@ test("local", function ()
 
 
 end)
+
+
+
