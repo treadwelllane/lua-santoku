@@ -57,9 +57,14 @@ local function xpcall_finalizer (ok, ...)
   if ok then
     return ok, ...
   elseif getmetatable(...) == mt then
-    return ok, aspread((...))
+    return ok, varg.sel(2, aspread((...)))
   else
-    return ok, ...
+
+
+
+
+
+    return ok, varg.sel(2, ...)
   end
 end
 
