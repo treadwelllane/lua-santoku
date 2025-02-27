@@ -1,3 +1,8 @@
+
+
+
+
+
 local str = require("santoku.string")
 local it = require("santoku.iter")
 local fs = require("santoku.fs")
@@ -29,4 +34,7 @@ end
 
 return function ()
   debug.sethook(trace, "rl")
+  return function ()
+    debug.sethook()
+  end
 end
