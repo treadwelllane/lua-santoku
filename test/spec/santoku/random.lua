@@ -29,3 +29,20 @@ test("fast", function ()
   rand.fast_normal(0, 100)
   rand.fast_random()
 end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
