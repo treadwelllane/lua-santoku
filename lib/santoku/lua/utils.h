@@ -226,8 +226,6 @@ static inline void *tk_lua_checkuserdata (lua_State *L, int i, char *mt, const c
   return ud;
 }
 
-static const char *tk_lua_eph_key_suffix = "_lookup";
-
 static inline void tk_lua_add_ephemeron (lua_State *L, const char *eph_key, int idx_parent, int idx_ephemeron)
 {
   idx_parent = tk_lua_absindex(L, idx_parent);
@@ -255,82 +253,91 @@ static inline void tk_lua_add_ephemeron (lua_State *L, const char *eph_key, int 
   lua_pushvalue(L, idx_ephemeron);
   lua_pushboolean(L, true);
   lua_rawset(L, -3);
-  char u_key[256];
-  snprintf(u_key, sizeof(u_key), "%s%s", eph_key, tk_lua_eph_key_suffix);
-  lua_getfield(L, LUA_REGISTRYINDEX, u_key);
-  if (lua_isnil(L, -1)) {
-    lua_pop(L, 1);
-    lua_newtable(L);
-    lua_newtable(L);
-    lua_pushliteral(L, "v");
-    lua_setfield(L, -2, "__mode");
-    lua_setmetatable(L, -2);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, LUA_REGISTRYINDEX, u_key);
-  }
-  lua_pushlightuserdata(L, lua_touserdata(L, idx_ephemeron));
-  lua_pushvalue(L, idx_ephemeron);
-  lua_rawset(L, -3);
-  lua_pop(L, 3);
+  lua_pop(L, 2);
 }
 
 static inline void tk_lua_get_ephemeron (lua_State *L, const char *eph_key, void *e)
 {
-  char u_key[256];
-  snprintf(u_key, sizeof(u_key), "%s%s", eph_key, tk_lua_eph_key_suffix);
-  lua_getfield(L, LUA_REGISTRYINDEX, u_key);
+  lua_getfield(L, LUA_REGISTRYINDEX, eph_key);
   if (lua_isnil(L, -1))
     return;
-  lua_pushlightuserdata(L, e);
-  lua_gettable(L, -2);
-  lua_remove(L, -2);
+
+
+  lua_pushnil(L);
+  while (lua_next(L, -2) != 0) {
+    if (lua_type(L, -1) == LUA_TTABLE) {
+
+      lua_pushnil(L);
+      while (lua_next(L, -2) != 0) {
+        void *child_ptr = lua_touserdata(L, -2);
+        if (child_ptr == e) {
+
+          lua_remove(L, -1);
+          lua_remove(L, -2);
+          lua_remove(L, -2);
+          lua_remove(L, -2);
+          return;
+        }
+        lua_pop(L, 1);
+      }
+    }
+    lua_pop(L, 1);
+  }
+
+
+  lua_pop(L, 1);
+  lua_pushnil(L);
 }
 
 static inline void tk_lua_del_ephemeron (lua_State *L, const char *eph_key, int idx_parent, void *e)
 {
   idx_parent = (idx_parent == LUA_NOREF) ? LUA_NOREF : tk_lua_absindex(L, idx_parent);
-  char u_key[256];
-  snprintf(u_key, sizeof(u_key), "%s%s", eph_key, tk_lua_eph_key_suffix);
-  lua_getfield(L, LUA_REGISTRYINDEX, u_key);
+  lua_getfield(L, LUA_REGISTRYINDEX, eph_key);
   if (lua_isnil(L, -1)) {
     lua_pop(L, 1);
     return;
   }
-  lua_pushlightuserdata(L, e);
-  lua_rawget(L, -2);
-  if (lua_isnil(L, -1)) {
-    lua_pop(L, 2);
-    return;
-  }
-  lua_getfield(L, LUA_REGISTRYINDEX, eph_key);
-  if (lua_isnil(L, -1)) {
-    lua_pop(L, 3);
-    return;
-  }
+
   if (idx_parent == LUA_NOREF) {
+
     lua_pushnil(L);
     while (lua_next(L, -2) != 0) {
       if (lua_type(L, -1) == LUA_TTABLE) {
-        lua_pushvalue(L, -4);
+
         lua_pushnil(L);
-        lua_rawset(L, -3);
+        while (lua_next(L, -2) != 0) {
+          if (lua_touserdata(L, -2) == e) {
+
+            lua_pop(L, 1);
+            lua_pushnil(L);
+            lua_rawset(L, -3);
+            break;
+          }
+          lua_pop(L, 1);
+        }
       }
       lua_pop(L, 1);
     }
-    lua_pushlightuserdata(L, e);
-    lua_pushnil(L);
-    lua_rawset(L, -5);
   } else {
+
     lua_pushvalue(L, idx_parent);
     lua_rawget(L, -2);
     if (!lua_isnil(L, -1) && lua_type(L, -1) == LUA_TTABLE) {
-      lua_pushvalue(L, -3);
+
       lua_pushnil(L);
-      lua_rawset(L, -3);
+      while (lua_next(L, -2) != 0) {
+        if (lua_touserdata(L, -2) == e) {
+          lua_pop(L, 1);
+          lua_pushnil(L);
+          lua_rawset(L, -3);
+          break;
+        }
+        lua_pop(L, 1);
+      }
     }
     lua_pop(L, 1);
   }
-  lua_pop(L, 3);
+  lua_pop(L, 1);
 }
 
 static inline void tk_lua_register (lua_State *L, luaL_Reg *regs, int nup)
