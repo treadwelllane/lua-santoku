@@ -261,17 +261,13 @@ static inline void tk_lua_get_ephemeron (lua_State *L, const char *eph_key, void
   lua_getfield(L, LUA_REGISTRYINDEX, eph_key);
   if (lua_isnil(L, -1))
     return;
-
-
   lua_pushnil(L);
   while (lua_next(L, -2) != 0) {
     if (lua_type(L, -1) == LUA_TTABLE) {
-
       lua_pushnil(L);
       while (lua_next(L, -2) != 0) {
         void *child_ptr = lua_touserdata(L, -2);
         if (child_ptr == e) {
-
           lua_remove(L, -1);
           lua_remove(L, -2);
           lua_remove(L, -2);
@@ -283,8 +279,6 @@ static inline void tk_lua_get_ephemeron (lua_State *L, const char *eph_key, void
     }
     lua_pop(L, 1);
   }
-
-
   lua_pop(L, 1);
   lua_pushnil(L);
 }
@@ -297,17 +291,13 @@ static inline void tk_lua_del_ephemeron (lua_State *L, const char *eph_key, int 
     lua_pop(L, 1);
     return;
   }
-
   if (idx_parent == LUA_NOREF) {
-
     lua_pushnil(L);
     while (lua_next(L, -2) != 0) {
       if (lua_type(L, -1) == LUA_TTABLE) {
-
         lua_pushnil(L);
         while (lua_next(L, -2) != 0) {
           if (lua_touserdata(L, -2) == e) {
-
             lua_pop(L, 1);
             lua_pushnil(L);
             lua_rawset(L, -3);
@@ -319,11 +309,9 @@ static inline void tk_lua_del_ephemeron (lua_State *L, const char *eph_key, int 
       lua_pop(L, 1);
     }
   } else {
-
     lua_pushvalue(L, idx_parent);
     lua_rawget(L, -2);
     if (!lua_isnil(L, -1) && lua_type(L, -1) == LUA_TTABLE) {
-
       lua_pushnil(L);
       while (lua_next(L, -2) != 0) {
         if (lua_touserdata(L, -2) == e) {
