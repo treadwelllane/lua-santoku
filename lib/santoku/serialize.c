@@ -3,16 +3,15 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <stdio.h>
 #include <santoku/lua/utils.h>
 
 #define MAX_DEPTH_DEFAULT 200
 #define INDENT_STRING "  "
 
-
 #if !defined(LUA_VERSION_NUM) || LUA_VERSION_NUM < 502
 #define lua_rawlen lua_objlen
 #endif
-
 
 static int lua_isinteger_compat(lua_State *L, int idx) {
 #if LUA_VERSION_NUM >= 503
@@ -20,7 +19,6 @@ static int lua_isinteger_compat(lua_State *L, int idx) {
 #else
   if (lua_type(L, idx) == LUA_TNUMBER) {
     lua_Number n = lua_tonumber(L, idx);
-
     if (isnan(n) || isinf(n)) {
       return 0;
     }
@@ -98,7 +96,6 @@ static void serialize_value (
 
     case LUA_TNUMBER: {
       double num = lua_tonumber(L, idx);
-
       if (isnan(num)) {
         luaL_addstring(buf, "(0/0)");
       } else if (isinf(num)) {
@@ -110,13 +107,14 @@ static void serialize_value (
       } else if (lua_isinteger_compat(L, idx)) {
 #if LUA_VERSION_NUM >= 503
         lua_pushfstring(L, "%I", lua_tointeger(L, idx));
-#else
-
-        lua_pushfstring(L, "%.0f", num);
-#endif
         luaL_addvalue(buf);
+#else
+        char numbuf[64];
+        snprintf(numbuf, sizeof(numbuf), "%.0f", num);
+        luaL_addstring(buf, numbuf);
+#endif
       } else {
-        lua_pushfstring(L, "%.17g", num);
+        lua_pushnumber(L, num);
         luaL_addvalue(buf);
       }
       break;
@@ -138,7 +136,6 @@ static void serialize_value (
       lua_gettable(L, seen_idx);
       if (!lua_isnil(L, -1)) {
         lua_pop(L, 1);
-
         luaL_addstring(buf, "nil");
         break;
       }
@@ -200,7 +197,6 @@ static void serialize_value (
             for (int d = 0; d <= level; d++)
               luaL_addstring(buf, div);
           }
-
           luaL_addchar(buf, '[');
           lua_pushvalue(L, -2);
           serialize_value(L, buf, -1, level + 1, nl, div, sep, seen_idx, max_depth);
@@ -318,7 +314,6 @@ static void serialize_table_contents (
         for (int d = 0; d < level; d++)
           luaL_addstring(buf, div);
       }
-
       luaL_addchar(buf, '[');
       lua_pushvalue(L, -2);
       serialize_value(L, buf, -1, level, nl, div, sep, seen_idx, max_depth);
