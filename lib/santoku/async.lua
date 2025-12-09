@@ -1,7 +1,5 @@
-local varg = require("santoku.varg")
 local arr = require("santoku.array")
 local fun = require("santoku.functional")
-local tup = varg.tup
 
 local M = {}
 
@@ -15,29 +13,24 @@ M._pipe = function (n, fns, ok, ...)
   end
 end
 
-
-
-
-
 M.pipe = function (...)
   local fns = { ... }
   return M._pipe(1, fns, true)
 end
 
 M._each = function (g, it, done)
-  return tup(function (...)
-    if ... == nil then
-      return done(true)
-    else
-      return it(function (ok, ...)
-        if not ok then
-          return done(ok, ...)
-        else
-          return M._each(g, it, done)
-        end
-      end, ...)
-    end
-  end, g())
+  local v = g()
+  if v == nil then
+    return done(true)
+  else
+    return it(function (ok, ...)
+      if not ok then
+        return done(ok, ...)
+      else
+        return M._each(g, it, done)
+      end
+    end, v)
+  end
 end
 
 M.each = function (g, it, done)
@@ -50,8 +43,6 @@ M._iter = function (y, it, done)
       if not ok then
         return done(ok, ...)
       else
-
-
         return M._iter(y, it, done)
       end
     end, ...)
