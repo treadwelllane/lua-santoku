@@ -137,20 +137,21 @@ local function parse (s, pat)
   return ret
 end
 
-local function endswith (str, pat)
-  if str ~= nil and smatch(str, pat .. "$") then
-    return true
-  else
+local function endswith (str, sfx)
+  if str == nil or sfx == nil then
     return false
   end
+  if sfx == "" then
+    return true
+  end
+  return sub(str, -#sfx) == sfx
 end
 
-local function startswith (str, pat)
-  if str ~= nil and smatch(str, "^" .. pat) then
-    return true
-  else
+local function startswith (str, pfx)
+  if str == nil or pfx == nil then
     return false
   end
+  return sub(str, 1, #pfx) == pfx
 end
 
 local function quote (s, q, e)
@@ -212,7 +213,7 @@ local function isempty (s)
 end
 
 local function stripprefix (str, pfx)
-  if not startswith(str, escape(pfx)) then
+  if not startswith(str, pfx) then
     return str
   end
   local pfxlen = #pfx
