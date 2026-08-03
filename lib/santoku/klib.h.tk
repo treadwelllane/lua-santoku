@@ -1,5 +1,5 @@
 #include <santoku/lua/utils.h>
-<% return readfile("res/vendor/klib/khash.h"), false %>
-<% return readfile("res/vendor/klib/kbtree.h"), false %>
-<% return readfile("res/vendor/klib/ksort.h"), false %>
-<% return readfile("res/vendor/klib/kvec.h"), false %>
+<% return readfile("res/vendor/klib/khash.h") %>
+<% return readfile("res/vendor/klib/kbtree.h") %>
+<% return readfile("res/vendor/klib/ksort.h") %>
+<% return readfile("res/vendor/klib/kvec.h") %>
