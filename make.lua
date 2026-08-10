@@ -1,6 +1,6 @@
 local env = {
   name = "santoku",
-  version = "1.1.0-1",
+  version = "2.0.0-1",
   variable_prefix = "TK",
   license = "MIT",
   public = true,
