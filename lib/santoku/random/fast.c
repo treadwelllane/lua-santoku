@@ -30,7 +30,6 @@ static luaL_Reg fns[] = {
 
 int luaopen_santoku_random_fast (lua_State *L)
 {
-  tk_fast_seed(tk_fast_entropy());
   lua_newtable(L);
   luaL_register(L, NULL, fns);
   lua_pushinteger(L, (lua_Integer)UINT32_MAX);

@@ -376,24 +376,10 @@ static inline bool tk_lua_fcheckboolean (lua_State *L, int i, char *name, char *
   return n;
 }
 
+#define TK_FAST_UNSEEDED 0xcafef00dd15ea5e5u
+
 static uint64_t const tk_fast_multiplier = 6364136223846793005u;
-static __thread uint64_t tk_fast_mcg_state = 0xcafef00dd15ea5e5u;
-
-static inline uint32_t tk_fast_random ()
-{
-  uint64_t x = tk_fast_mcg_state;
-  unsigned int count = (unsigned int) (x >> 61);
-  tk_fast_mcg_state = x * tk_fast_multiplier;
-  return (uint32_t) ((x ^ x >> 22) >> (22 + count));
-}
-
-static inline double tk_fast_normal (double mean, double variance)
-{
-  double u1 = (double) (tk_fast_random() + 1) / ((double) UINT32_MAX + 1);
-  double u2 = (double) tk_fast_random() / UINT32_MAX;
-  double n1 = sqrt(-2 * log(u1)) * sin(8 * atan(1) * u2);
-  return mean + sqrt(variance) * n1;
-}
+static __thread uint64_t tk_fast_mcg_state = TK_FAST_UNSEEDED;
 
 static inline void tk_fast_seed (uint64_t r)
 {
@@ -406,6 +392,24 @@ static inline uint64_t tk_fast_entropy ()
   uint64_t c = (uint64_t) clock();
   uint64_t a = (uint64_t) (uintptr_t) &t;
   return tk_hash_mix(t ^ (c << 17) ^ (a << 33) ^ (a >> 31));
+}
+
+static inline uint32_t tk_fast_random ()
+{
+  if (tk_fast_mcg_state == TK_FAST_UNSEEDED)
+    tk_fast_seed(tk_fast_entropy());
+  uint64_t x = tk_fast_mcg_state;
+  unsigned int count = (unsigned int) (x >> 61);
+  tk_fast_mcg_state = x * tk_fast_multiplier;
+  return (uint32_t) ((x ^ x >> 22) >> (22 + count));
+}
+
+static inline double tk_fast_normal (double mean, double variance)
+{
+  double u1 = (double) (tk_fast_random() + 1) / ((double) UINT32_MAX + 1);
+  double u2 = (double) tk_fast_random() / UINT32_MAX;
+  double n1 = sqrt(-2 * log(u1)) * sin(8 * atan(1) * u2);
+  return mean + sqrt(variance) * n1;
 }
 
 static inline double tk_fast_drand ()

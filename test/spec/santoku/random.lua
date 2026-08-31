@@ -46,3 +46,19 @@ test("generators are seeded per process", function ()
     "three processes produced the identical fast_random stream: " .. tostring(out[1]))
 end)
 
+test("explicit seeding stays reproducible", function ()
+  local lua = arg and arg[-1] or "lua5.1"
+  local prog = "local r = require('santoku.random') r.seed(42) r.fast_seed(42) " ..
+    "print(r.fast_random(), r.alnum(12), r.num(1, 1000000))"
+  local out = {}
+  for i = 1, 2 do
+    local f = io.popen(lua .. " -e \"" .. prog .. "\" 2>/dev/null")
+    out[i] = f:read("*a")
+    f:close()
+  end
+  assert(out[1] ~= "" and out[1] ~= nil, "could not spawn a child interpreter")
+  assert(out[1] == out[2],
+    "explicit seeding must be reproducible across processes: " ..
+    tostring(out[1]) .. " vs " .. tostring(out[2]))
+end)
+
