@@ -3,7 +3,6 @@ local arr = require("santoku.array")
 local fast = require("santoku.random.fast")
 
 local _seed = math.randomseed
-local _time = os.time
 local _char = string.char
 local _select = select
 local _concat = table.concat
@@ -16,9 +15,10 @@ local _max = math.max
 local _min = math.min
 
 local function seed (t)
-  t = t or _time()
-  _seed(t)
+  _seed(t or fast.fast_random())
 end
+
+seed()
 
 local function str (n, ...)
   local l, u
@@ -36,8 +36,30 @@ local function str (n, ...)
   return _concat(t)
 end
 
+local _alnum = {}
+
+for i = 48, 57 do
+  _alnum[#_alnum + 1] = _char(i)
+end
+
+for i = 65, 90 do
+  _alnum[#_alnum + 1] = _char(i)
+end
+
+for i = 97, 122 do
+  _alnum[#_alnum + 1] = _char(i)
+end
+
+local _alnum_n = #_alnum
+
 local function alnum (n)
-  return str(n, 48, 122)
+  local t = {}
+  n = n or 1
+  while n > 0 do
+    t[n] = _alnum[_rand(1, _alnum_n)]
+    n = n - 1
+  end
+  return _concat(t)
 end
 
 local function norm ()

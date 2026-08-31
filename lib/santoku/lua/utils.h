@@ -400,6 +400,14 @@ static inline void tk_fast_seed (uint64_t r)
   tk_fast_mcg_state = tk_hash_mix(r);
 }
 
+static inline uint64_t tk_fast_entropy ()
+{
+  uint64_t t = (uint64_t) time(NULL);
+  uint64_t c = (uint64_t) clock();
+  uint64_t a = (uint64_t) (uintptr_t) &t;
+  return tk_hash_mix(t ^ (c << 17) ^ (a << 33) ^ (a >> 31));
+}
+
 static inline double tk_fast_drand ()
 {
   return ((double)tk_fast_random()) / ((double)UINT32_MAX);

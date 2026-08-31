@@ -2,7 +2,7 @@
 
 static inline int fast_seed (lua_State *L)
 {
-  tk_fast_seed(tk_lua_optunsigned(L, 1, "seed", time(NULL)));
+  tk_fast_seed(tk_lua_optunsigned(L, 1, "seed", (unsigned int) tk_fast_entropy()));
   return 0;
 }
 
@@ -21,7 +21,6 @@ static inline int fast_normal (lua_State *L)
   return 1;
 }
 
-
 static luaL_Reg fns[] = {
   { "fast_seed", fast_seed },
   { "fast_random", fast_random },
@@ -31,6 +30,7 @@ static luaL_Reg fns[] = {
 
 int luaopen_santoku_random_fast (lua_State *L)
 {
+  tk_fast_seed(tk_fast_entropy());
   lua_newtable(L);
   luaL_register(L, NULL, fns);
   lua_pushinteger(L, (lua_Integer)UINT32_MAX);
