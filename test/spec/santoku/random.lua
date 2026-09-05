@@ -1,5 +1,6 @@
 local test = require("santoku.test")
 local rand = require("santoku.random")
+local str = require("santoku.string")
 local validate = require("santoku.validate")
 
 local eq = validate.isequal
@@ -20,7 +21,7 @@ test("alnum", function ()
   local s = rand.alnum(2000)
   assert(eq(#s, 2000))
   for i = 1, #s do
-    local b = string.byte(s, i)
+    local b = str.byte(s, i)
     assert((b >= 48 and b <= 57) or (b >= 65 and b <= 90) or (b >= 97 and b <= 122),
       "alnum produced a non-alphanumeric byte: " .. b)
   end

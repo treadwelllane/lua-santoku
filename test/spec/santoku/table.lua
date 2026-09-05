@@ -1,4 +1,5 @@
 local test = require("santoku.test")
+local arr = require("santoku.array")
 local op = require("santoku.op")
 local fun = require("santoku.functional")
 
@@ -109,21 +110,21 @@ for _, impl in ipairs(implementations) do
     test("keys", function ()
       local t = { a = 1, b = 2, c = 3 }
       local k = tbl.keys(t)
-      table.sort(k)
+      arr.sort(k)
       assert(tbl.equals({ "a", "b", "c" }, k))
     end)
 
     test("vals", function ()
       local t = { a = 1, b = 2, c = 3 }
       local v = tbl.vals(t)
-      table.sort(v)
+      arr.sort(v)
       assert(tbl.equals({ 1, 2, 3 }, v))
     end)
 
     test("entries", function ()
       local t = { a = 1, b = 2 }
       local e = tbl.entries(t)
-      table.sort(e, function (x, y) return x[1] < y[1] end)
+      arr.sort(e, function (x, y) return x[1] < y[1] end)
       assert(tbl.equals({ { "a", 1 }, { "b", 2 } }, e))
     end)
 
@@ -136,7 +137,7 @@ for _, impl in ipairs(implementations) do
         keys[#keys + 1] = k
       end)
       assert(sum == 6)
-      table.sort(keys)
+      arr.sort(keys)
       assert(tbl.equals({ "a", "b", "c" }, keys))
     end)
 

@@ -1,5 +1,7 @@
 local test = require("santoku.test")
 local fi = require("santoku.fracidx")
+local arr = require("santoku.array")
+local num = require("santoku.num")
 
 test("between empty and empty returns canonical zero", function ()
   assert(fi.between(nil, nil) == "a0")
@@ -77,18 +79,17 @@ end)
 
 test("lex order matches insertion order across many ops", function ()
 
-
   local keys = { fi.between(nil, nil) }
   for i = 1, 30 do
     if i % 3 == 0 then
-      table.insert(keys, 1, fi.between(nil, keys[1]))
+      arr.insert(keys, 1, fi.between(nil, keys[1]))
     elseif i % 3 == 1 then
-      table.insert(keys, fi.between(keys[#keys], nil))
+      arr.push(keys, fi.between(keys[#keys], nil))
     else
-      local mid_idx = math.floor(#keys / 2)
+      local mid_idx = num.floor(#keys / 2)
       if mid_idx >= 1 and mid_idx < #keys then
         local m = fi.between(keys[mid_idx], keys[mid_idx + 1])
-        table.insert(keys, mid_idx + 1, m)
+        arr.insert(keys, mid_idx + 1, m)
       end
     end
     for j = 2, #keys do

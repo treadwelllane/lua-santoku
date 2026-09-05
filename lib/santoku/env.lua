@@ -46,23 +46,22 @@ local function var (name, ...)
   end
 end
 
-local searchpath = package.searchpath or -- luacheck: ignore
-  function (name, path, sep, rep)
-    sep = gsub(sep or ".", "(%p)", "%%%1")
-    rep = gsub(rep or sub(config, 1, 1), "(%%)", "%%%1")
-    local pname = gsub(gsub(name, sep, rep), "(%%)", "%%%1")
-    local msg = {}
-    for subpath in gmatch(path, "[^;]+") do
-      local fpath = gsub(subpath, "%?", pname)
-      local f = io_open(fpath, "r")
-      if f then
-        io_close(f)
-        return fpath
-      end
-      msg[#msg+1] = "\n\tno file '" .. fpath .. "'"
+local function searchpath (name, path, sep, rep)
+  sep = gsub(sep or ".", "(%p)", "%%%1")
+  rep = gsub(rep or sub(config, 1, 1), "(%%)", "%%%1")
+  local pname = gsub(gsub(name, sep, rep), "(%%)", "%%%1")
+  local msg = {}
+  for subpath in gmatch(path, "[^;]+") do
+    local fpath = gsub(subpath, "%?", pname)
+    local f = io_open(fpath, "r")
+    if f then
+      io_close(f)
+      return fpath
     end
-    return nil, tcat(msg)
+    msg[#msg+1] = "\n\tno file '" .. fpath .. "'"
   end
+  return nil, tcat(msg)
+end
 
 return {
   var = var,

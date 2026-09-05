@@ -9,8 +9,11 @@ local calls, total, this = {}, {}, {}
 
 local getinfo = debug.getinfo
 local sethook = debug.sethook
-local concat = table.concat
-local clock = os.clock
+local concat = arr.concat
+local utc_time = require("santoku.utc.capi").time
+local function clock ()
+  return utc_time(true)
+end
 local aoverlay = arr.overlay
 
 return function ()

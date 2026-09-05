@@ -1,22 +1,7 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+local str = require("santoku.string")
+local arr = require("santoku.array")
+local num = require("santoku.num")
 
 local M = {}
 
@@ -74,8 +59,6 @@ local function validate_key(key)
     end
   end
 
-
-
   if key:sub(-1) == "0" and #key > ilen then
     error("invalid order key (trailing zero in fractional part): " .. key)
   end
@@ -103,15 +86,15 @@ local function increment_integer(x)
     elseif head == "z" then
       return nil
     end
-    local h = string.char(head:byte() + 1)
+    local h = str.char(head:byte() + 1)
     if h > "a" then
       digs[#digs + 1] = "0"
     else
       digs[#digs] = nil
     end
-    return h .. table.concat(digs)
+    return h .. arr.concat(digs)
   end
-  return head .. table.concat(digs)
+  return head .. arr.concat(digs)
 end
 
 local function decrement_integer(x)
@@ -136,15 +119,15 @@ local function decrement_integer(x)
     elseif head == "A" then
       return nil
     end
-    local h = string.char(head:byte() - 1)
+    local h = str.char(head:byte() - 1)
     if h < "Z" then
       digs[#digs + 1] = digit_at(BASE - 1)
     else
       digs[#digs] = nil
     end
-    return h .. table.concat(digs)
+    return h .. arr.concat(digs)
   end
-  return head .. table.concat(digs)
+  return head .. arr.concat(digs)
 end
 
 local midpoint
@@ -171,7 +154,7 @@ midpoint = function (a, b)
   local digit_a = (a ~= "") and digit_index[a:sub(1, 1)] or 0
   local digit_b = (b ~= "") and digit_index[b:sub(1, 1)] or BASE
   if digit_b - digit_a > 1 then
-    local mid = math.floor(0.5 * (digit_a + digit_b) + 0.5)
+    local mid = num.floor(0.5 * (digit_a + digit_b) + 0.5)
     return digit_at(mid)
   end
   if b ~= "" and #b > 1 then
@@ -179,9 +162,6 @@ midpoint = function (a, b)
   end
   return digit_at(digit_a) .. midpoint(a == "" and "" or a:sub(2), "")
 end
-
-
-
 
 M.between = function (prev, next_)
   if prev ~= nil then validate_key(prev) end
@@ -233,16 +213,12 @@ M.between = function (prev, next_)
   return ia .. midpoint(fa, "")
 end
 
-
-
-
 M.between_n = function (prev, next_, n)
   if n <= 0 then return {} end
   if n == 1 then return { M.between(prev, next_) } end
 
-
   local mid = M.between(prev, next_)
-  local left_n = math.floor(n / 2)
+  local left_n = num.floor(n / 2)
   local right_n = n - left_n - 1
   local left = M.between_n(prev, mid, left_n)
   local right = M.between_n(mid, next_, right_n)
@@ -252,8 +228,6 @@ M.between_n = function (prev, next_, n)
   for _, k in ipairs(right) do out[#out + 1] = k end
   return out
 end
-
-
 
 M.validate = validate_key
 

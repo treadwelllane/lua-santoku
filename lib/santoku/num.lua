@@ -11,7 +11,7 @@ local function trunc (n, d)
 end
 
 local function atan (y, x)
-  if x ~= nil and _atan2 then -- luacheck: ignore
+  if x ~= nil then
     return _atan2(y, x) -- luacheck: ignore
   else
     return _atan(y)
@@ -31,7 +31,6 @@ local function mavg (alpha)
     end
   end
 end
-
 
 local function round (n, m)
   if m then

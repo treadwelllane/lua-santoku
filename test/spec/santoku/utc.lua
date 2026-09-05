@@ -98,3 +98,35 @@ test("subsec", function ()
   t = t - tt
   err.assert(t > 0 and t < 1, "subsec fraction is zero")
 end)
+
+test("days_from_civil", function ()
+  err.assert(vdt.isequal(utc.days_from_civil(1970, 1, 1), 0))
+  err.assert(vdt.isequal(utc.days_from_civil(2024, 4, 8), 19821))
+  err.assert(vdt.isequal(utc.days_from_civil(1969, 12, 31), -1))
+  err.assert(vdt.isequal(utc.days_from_civil(2000, 2, 29), 11016))
+end)
+
+test("civil_from_days", function ()
+  local y, m, d = utc.civil_from_days(0)
+  err.assert(vdt.isequal(y, 1970) and vdt.isequal(m, 1) and vdt.isequal(d, 1))
+  y, m, d = utc.civil_from_days(19821)
+  err.assert(vdt.isequal(y, 2024) and vdt.isequal(m, 4) and vdt.isequal(d, 8))
+  for z = -1000, 1000, 37 do
+    y, m, d = utc.civil_from_days(z)
+    err.assert(vdt.isequal(utc.days_from_civil(y, m, d), z))
+  end
+end)
+
+test("weekday", function ()
+  err.assert(vdt.isequal(utc.weekday(utc.days_from_civil(1970, 1, 1)), 4))
+  err.assert(vdt.isequal(utc.weekday(utc.days_from_civil(2024, 4, 8)), 1))
+  err.assert(vdt.isequal(utc.weekday(utc.days_from_civil(2024, 4, 7)), 0))
+end)
+
+test("local_offset", function ()
+  local t = 1712554366
+  local off = utc.local_offset(t)
+  err.assert(vdt.isequal(off % 900, 0))
+  err.assert(off >= -14 * 3600 and off <= 14 * 3600)
+  err.assert(utc.local_offset() ~= nil)
+end)

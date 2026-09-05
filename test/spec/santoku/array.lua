@@ -531,7 +531,7 @@ for _, impl in ipairs(implementations) do
 
     test("imap with pairs", function ()
       local r = arr.imap(function (k, v) return k .. "=" .. v end, pairs({ x = "1", y = "2" }))
-      table.sort(r)
+      arr.sort(r)
       assert(tbl.equals({ "x=1", "y=2" }, r))
     end)
 

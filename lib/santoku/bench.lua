@@ -1,6 +1,9 @@
 local collectgarbage = collectgarbage
 local print = print
-local clock = os.clock
+local time = require("santoku.utc.capi").time
+local function clock ()
+  return time(true)
+end
 
 return function (tag, fn, ...)
   collectgarbage()
