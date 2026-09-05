@@ -130,3 +130,13 @@ test("local_offset", function ()
   err.assert(off >= -14 * 3600 and off <= 14 * 3600)
   err.assert(utc.local_offset() ~= nil)
 end)
+
+test("local_time inverts local date fields", function ()
+  local t = num.trunc(utc.time(), 0)
+  err.assert(vdt.isequal(utc.local_time(utc.date(t, true)), t))
+  local fields = { year = 2026, month = 9, day = 2, hour = 18, min = 22, sec = 1 }
+  local lt = utc.local_time(fields)
+  local back = utc.date(lt, true)
+  err.assert(vdt.isequal(back.year, 2026) and vdt.isequal(back.month, 9) and vdt.isequal(back.day, 2))
+  err.assert(vdt.isequal(back.hour, 18) and vdt.isequal(back.min, 22) and vdt.isequal(back.sec, 1))
+end)

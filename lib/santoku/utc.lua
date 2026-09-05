@@ -37,11 +37,17 @@ local function local_offset (t)
   return capi.time(capi.date(t, true)) - t
 end
 
+local function local_time (fields)
+  local t = capi.time(fields)
+  return t - local_offset(t)
+end
+
 return tbl.merge({
   days_from_civil = days_from_civil,
   civil_from_days = civil_from_days,
   weekday = weekday,
   local_offset = local_offset,
+  local_time = local_time,
   stopwatch = function ()
     local start = capi.time(true)
     local last = start
