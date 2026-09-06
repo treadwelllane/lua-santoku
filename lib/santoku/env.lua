@@ -2,6 +2,7 @@ local arr = require("santoku.array")
 
 local err = require("santoku.error")
 local error = err.error
+local pcall = err.pcall
 
 local gmatch = string.gmatch
 local gsub = string.gsub
@@ -46,7 +47,36 @@ local function var (name, ...)
   end
 end
 
+local function path ()
+  return package.path
+end
+
+local function cpath ()
+  return package.cpath
+end
+
+local function with_paths (new_path, new_cpath, fn, ...)
+  local old_path = package.path
+  local old_cpath = package.cpath
+  if new_path then
+    package.path = new_path
+  end
+  if new_cpath then
+    package.cpath = new_cpath
+  end
+  local function restore (ok, ...)
+    package.path = old_path
+    package.cpath = old_cpath
+    if not ok then
+      error(...)
+    end
+    return ...
+  end
+  return restore(pcall(fn, ...))
+end
+
 local function searchpath (name, path, sep, rep)
+  path = path or package.path
   sep = gsub(sep or ".", "(%p)", "%%%1")
   rep = gsub(rep or sub(config, 1, 1), "(%%)", "%%%1")
   local pname = gsub(gsub(name, sep, rep), "(%%)", "%%%1")
@@ -66,5 +96,8 @@ end
 return {
   var = var,
   interpreter = interpreter,
-  searchpath = searchpath
+  searchpath = searchpath,
+  path = path,
+  cpath = cpath,
+  with_paths = with_paths,
 }
